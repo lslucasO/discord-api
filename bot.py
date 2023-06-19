@@ -4,11 +4,22 @@ from key import DISCORD_API_TOKEN
 
 client = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
-
 @client.event
 async def on_ready():
     await client.tree.sync()
     print(f"{client.user.name} is connected!")
+
+
+@client.event
+async def on_message(message):
+    if message.content.startswith("+"):
+        tarefas_file = open("./database/Tarefas/tarefas.txt", "a")
+        tarefa = message.content.split("+")
+        tarefas_file.write(f"{tarefa[1].capitalize()}\n")
+        await message.delete()
+
+
+
 
 
 @client.command()
