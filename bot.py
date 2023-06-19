@@ -6,7 +6,7 @@ client = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
 
 @client.event
-async def on_ready(ctx):
+async def on_ready():
     await client.tree.sync()
     print(f"{client.user.name} is connected!")
 
@@ -19,7 +19,7 @@ async def teste(ctx):
 async def load():   
     for filename in os.listdir('./commands'):
         if filename.endswith('.py'):
-            await client.load_extension(f'cogs.{filename[:-3]}')
+            await client.load_extension(f'commands.{filename[:-3]}')
             print(f'{filename} is ready!')
 
 
