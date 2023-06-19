@@ -1,18 +1,2 @@
-:white_large_square: Seila
-
-:white_large_square: Perd
-
-:white_large_square: Naosei
-
-:white_large_square: Sozinho
-
-:white_large_square: Maisum
-
-:white_large_square: Dnv
-
-:white_large_square: Tijolo
-
-:white_large_square: Cavalos
-
-:white_large_square: Funcionou
-
+:white_large_square: Comprar pão
+:white_large_square: Vender banana

@@ -9,24 +9,30 @@ class Buttons(discord.ui.View):
     async def adicionar_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer(ephemeral=True)
         
-        self.fazer = open("./database/Tarefas/tarefas.txt", "r")
-        
-        
-        await interaction.channel.send("Digite a tarefa que deseja adicionar a sua lista, use `+` no inicio")
+        self.adicionar_lista = await interaction.channel.send("Digite a tarefa que deseja adicionar a sua lista")
         self.tarefa = await interaction.client.wait_for("message")
-        await interaction.channel.send(f"Tarefa adicionada!")
+
+        self.tarefas_file = open("./database/Tarefas/tarefas.txt", "a")
+        self.msg = self.tarefa.content
+        self.emoji_tarefa_fazer = ":white_large_square:"
+        self.tarefas_file.write(f"{self.emoji_tarefa_fazer} {self.msg.capitalize()}\n")
+        
+        self.tarefas_file = open("./database/Tarefas/tarefas.txt", "r")
         
         
         embed_Titulo = discord.Embed(title=f"Sua Lista de Tarefas", description="Perfeito para monitorar e controlar suas atividades!", color=discord.Color.green())
         embed_Titulo.set_thumbnail(url=interaction.client.guilds[0].icon.url)
         embed_Tarefas = discord.Embed(title=f":blue_book: Atividades de @{interaction.user.name.capitalize()}", description=f"Voce pode adicionar, remover e gerenciar por este embed", color=discord.Color.blurple())
-        embed_Tarefas.add_field(name=f"Lista a cumprir:", value=f"{self.fazer.read()}")
-        
+        embed_Tarefas.add_field(inline=True, name=f"Lista a cumprir:\n", value=f"\n{self.tarefas_file.read()}")
+        embed_Tarefas.add_field(inline=True, name=f"Já completadas:\n", value=f"")
         embeds = [embed_Titulo, embed_Tarefas]
         self.view = Buttons()
         
-        await interaction.channel.send(embeds=embeds, view=self.view)
+        self.add = await interaction.channel.send("Sua tarefa está sendo adicionada...")
+        self.msg_list = [self.tarefa, self.adicionar_lista, self.add]
         await interaction.delete_original_response()
+        await interaction.channel.delete_messages(messages=self.msg_list)
+        await interaction.channel.send(embeds=embeds, view=self.view)
         
 
 
@@ -47,6 +53,7 @@ class ListadeTarefas(commands.Cog):
         
         self.content = []
         self.aviso = ""
+        self.fazer = open("./database/Tarefas/tarefas.txt", "a")
         self.fazer = open("./database/Tarefas/tarefas.txt", "r")
         
         
@@ -59,11 +66,11 @@ class ListadeTarefas(commands.Cog):
                 self.content.append(item)
                 
         if len(self.content) == 0:
-            self.aviso = "Você ainda não possui tarefas, adicione algumas!"
-            embed_Tarefas.add_field(name=f"{self.aviso}", value="")
+            embed_Tarefas.add_field(inline=True, name=f"Você ainda não possui tarefas, adicione algumas!", value="")
+            embed_Tarefas.add_field(inline=True, name=f"Já completadas:", value=f"")
         else:
-            embed_Tarefas.add_field(name=f"Lista a cumprir:", value=f"{self.fazer.read()}")
-       
+            embed_Tarefas.add_field(inline=True, name=f"Lista a cumprir:", value=f"\n{self.fazer.read()}")
+            embed_Tarefas.add_field(inline=True, name=f"Já completadas:", value=f"")
         
         
         embeds = [embed_Titulo, embed_Tarefas]
