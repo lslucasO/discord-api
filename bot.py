@@ -15,10 +15,11 @@ async def on_message(message):
     if message.content.startswith("+"):
         tarefas_file = open("./database/Tarefas/tarefas.txt", "a")
         tarefa = message.content.split("+")
-        tarefas_file.write(f"{tarefa[1].capitalize()}\n")
+        emoji_tarefa_fazer = ":white_large_square:"
+        tarefas_file.write(f"{emoji_tarefa_fazer} {tarefa[1].capitalize()}\n")
+        tarefas_file.write(f"\n")
+
         await message.delete()
-
-
 
 
 
