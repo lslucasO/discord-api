@@ -5,7 +5,7 @@ from discord import app_commands
 
 class Buttons(discord.ui.View):
     
-    @discord.ui.button(label="Adicionar tarefa", emoji="📚",style=discord.ButtonStyle.success)
+    @discord.ui.button(label="Adicionar Tarefa", emoji="📚",style=discord.ButtonStyle.success)
     async def adicionar_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer(ephemeral=True)
         
@@ -14,8 +14,7 @@ class Buttons(discord.ui.View):
 
         self.tarefas_file = open("./database/Tarefas/tarefas.txt", "a")
         self.msg = self.tarefa.content
-        self.emoji_tarefa_fazer = ":white_large_square:"
-        self.tarefas_file.write(f"{self.emoji_tarefa_fazer} {self.msg.capitalize()}\n")
+        self.tarefas_file.write(f"> {self.msg.capitalize()}\n")
         
         self.tarefas_file = open("./database/Tarefas/tarefas.txt", "r")
         
@@ -28,7 +27,7 @@ class Buttons(discord.ui.View):
         embeds = [embed_Titulo, embed_Tarefas]
         self.view = Buttons()
         
-        self.add = await interaction.channel.send("Sua tarefa está sendo adicionada...")
+        self.add = await interaction.channel.send("Sua tarefa está sendo **adicionada**...")
         self.msg_list = [self.tarefa, self.adicionar_lista, self.add]
         await interaction.delete_original_response()
         await interaction.channel.delete_messages(messages=self.msg_list)
@@ -36,11 +35,59 @@ class Buttons(discord.ui.View):
         
 
 
-    @discord.ui.button(label="Remover tarefa", emoji="🔧",style=discord.ButtonStyle.danger)
+    @discord.ui.button(label="Remover Tarefa", emoji="🔧",style=discord.ButtonStyle.danger)
     async def remover_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
         
-        await interaction.followup.send("In progress")
+        self.msg1 = await interaction.channel.send("Qual tarefa você deseja remover?")
+        self.tarefa_remover = await interaction.client.wait_for("message")
+        
+        self.check = []
+        self.tarefas_list = []
+        
+        
+        with open("./database/Tarefas/tarefas.txt", "r") as arquivo:
+            for tarefa in arquivo:
+                self.tarefas_list.append(tarefa[2:-1])
+                
+        
+        
+        if self.tarefa_remover.content.capitalize() in self.tarefas_list:
+            
+            self.tarefas_file = open("./database/Tarefas/tarefas.txt", "r")
+            self.tarefas_list.remove(self.tarefa_remover.content.capitalize())
+            
+            with open("./database/Tarefas/tarefas.txt", "w") as arquivo:
+                for item in self.tarefas_list:
+                    arquivo.write(f"> {item}\n")
+            
+            embed_Titulo = discord.Embed(title=f"Sua Lista de Tarefas", description="Perfeito para monitorar e controlar suas atividades!", color=discord.Color.green())
+            embed_Titulo.set_thumbnail(url=interaction.client.guilds[0].icon.url)
+            embed_Tarefas = discord.Embed(title=f":blue_book: Atividades de @{interaction.user.name.capitalize()}", description=f"Voce pode adicionar, remover e gerenciar por este embed", color=discord.Color.blurple())
+            
+            if len(self.tarefas_list) == 0:
+                embed_Tarefas.add_field(inline=True, name=f"Você ainda não possui tarefas", value="")
+            else:
+                embed_Tarefas.add_field(inline=True, name=f"Lista a cumprir:", value=f"\n{self.tarefas_file.read()}")
+                embed_Tarefas.add_field(inline=True, name=f"Já completadas:", value=f"")
+        
+        
+            embeds = [embed_Titulo, embed_Tarefas]
+            self.view = Buttons()
+            
+            self.remove = await interaction.channel.send("Sua tarefa está sendo **removida**...")
+            self.msg_list = [self.msg1, self.tarefa_remover, self.remove]
+            await interaction.delete_original_response()
+            await interaction.channel.delete_messages(messages=self.msg_list)
+            await interaction.channel.send(embeds=embeds, view=self.view)
+            
+        else:
+            
+            await interaction.followup.send("Essa tarefa não faz parte da sua lista!", ephemeral=True)
+                
+            
+        
+        
         
         
 class ListadeTarefas(commands.Cog):
@@ -66,8 +113,7 @@ class ListadeTarefas(commands.Cog):
                 self.content.append(item)
                 
         if len(self.content) == 0:
-            embed_Tarefas.add_field(inline=True, name=f"Você ainda não possui tarefas, adicione algumas!", value="")
-            embed_Tarefas.add_field(inline=True, name=f"Já completadas:", value=f"")
+            embed_Tarefas.add_field(inline=True, name=f"Você ainda não possui tarefas", value="")
         else:
             embed_Tarefas.add_field(inline=True, name=f"Lista a cumprir:", value=f"\n{self.fazer.read()}")
             embed_Tarefas.add_field(inline=True, name=f"Já completadas:", value=f"")
