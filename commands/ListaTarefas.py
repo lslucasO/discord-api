@@ -12,15 +12,15 @@ class Buttons(discord.ui.View):
         self.adicionar_lista = await interaction.channel.send("Digite a tarefa que deseja adicionar a sua lista")
         self.tarefa = await interaction.client.wait_for("message")
 
-        self.tarefas_file = open("./database/Tarefas/tarefas.txt", "a")
+        self.tarefas_file = open(f"./database/Tarefas/{interaction.user.name}.txt", "a")
         self.msg = self.tarefa.content
         self.tarefas_file.write(f"> {self.msg.capitalize()}\n")
         
-        self.tarefas_file = open("./database/Tarefas/tarefas.txt", "r")
+        self.tarefas_file = open(f"./database/Tarefas/{interaction.user.name}.txt", "r")
         
         
         embed_Titulo = discord.Embed(title=f"Sua Lista de Tarefas", description="Perfeito para monitorar e controlar suas atividades!", color=discord.Color.green())
-        embed_Titulo.set_thumbnail(url=interaction.client.guilds[0].icon.url)
+        embed_Titulo.set_thumbnail(url=interaction.user.avatar.url)
         embed_Tarefas = discord.Embed(title=f":blue_book: Atividades de @{interaction.user.name.capitalize()}", description=f"Voce pode adicionar, remover e gerenciar por este embed", color=discord.Color.blurple())
         embed_Tarefas.add_field(inline=True, name=f"Lista a cumprir:\n", value=f"\n{self.tarefas_file.read()}")
         embed_Tarefas.add_field(inline=True, name=f"Já completadas:\n", value=f"")
@@ -46,7 +46,7 @@ class Buttons(discord.ui.View):
         self.tarefas_list = []
         
         
-        with open("./database/Tarefas/tarefas.txt", "r") as arquivo:
+        with open(f"./database/Tarefas/{interaction.user.name}.txt", "r") as arquivo:
             for tarefa in arquivo:
                 self.tarefas_list.append(tarefa[2:-1])
                 
@@ -54,15 +54,15 @@ class Buttons(discord.ui.View):
         
         if self.tarefa_remover.content.capitalize() in self.tarefas_list:
             
-            self.tarefas_file = open("./database/Tarefas/tarefas.txt", "r")
+            self.tarefas_file = open(f"./database/Tarefas/{interaction.user.name}.txt", "r")
             self.tarefas_list.remove(self.tarefa_remover.content.capitalize())
             
-            with open("./database/Tarefas/tarefas.txt", "w") as arquivo:
+            with open(f"./database/Tarefas/{interaction.user.name}.txt", "w") as arquivo:
                 for item in self.tarefas_list:
                     arquivo.write(f"> {item}\n")
             
             embed_Titulo = discord.Embed(title=f"Sua Lista de Tarefas", description="Perfeito para monitorar e controlar suas atividades!", color=discord.Color.green())
-            embed_Titulo.set_thumbnail(url=interaction.client.guilds[0].icon.url)
+            embed_Titulo.set_thumbnail(url=interaction.user.avatar.url)
             embed_Tarefas = discord.Embed(title=f":blue_book: Atividades de @{interaction.user.name.capitalize()}", description=f"Voce pode adicionar, remover e gerenciar por este embed", color=discord.Color.blurple())
             
             if len(self.tarefas_list) == 0:
@@ -84,11 +84,8 @@ class Buttons(discord.ui.View):
         else:
             
             await interaction.followup.send("Essa tarefa não faz parte da sua lista!", ephemeral=True)
-                
-            
-        
-        
-        
+
+     
         
 class ListadeTarefas(commands.Cog):
     def __init__(self, client):
@@ -100,15 +97,15 @@ class ListadeTarefas(commands.Cog):
         
         self.content = []
         self.aviso = ""
-        self.fazer = open("./database/Tarefas/tarefas.txt", "a")
-        self.fazer = open("./database/Tarefas/tarefas.txt", "r")
+        self.fazer = open(f"./database/Tarefas/{interaction.user.name}.txt", "a")
+        self.fazer = open(f"./database/Tarefas/{interaction.user.name}.txt", "r")
         
         
         embed_Titulo = discord.Embed(title=f"Sua Lista de Tarefas", description="Perfeito para monitorar e controlar suas atividades!", color=discord.Color.green())
-        embed_Titulo.set_thumbnail(url=interaction.client.guilds[0].icon.url)
+        embed_Titulo.set_thumbnail(url=interaction.user.avatar.url)
         embed_Tarefas = discord.Embed(title=f":blue_book: Atividades de @{interaction.user.name.capitalize()}", description=f"Voce pode adicionar, remover e gerenciar por este embed", color=discord.Color.blurple())
         
-        with open("./database/Tarefas/tarefas.txt", "r") as arquivo:
+        with open(f"./database/Tarefas/{interaction.user.name}.txt", "r") as arquivo:
             for item in arquivo:
                 self.content.append(item)
                 
