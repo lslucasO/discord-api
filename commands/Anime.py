@@ -14,7 +14,7 @@ def get_anime():
             anime_list.append(anime[:-1])
                     
     while True:
-        if anime_Database["data"]["score"] != None and anime_Database["data"]["synopsis"] != None and anime_Database["data"]["approved"] == True and anime_Database["data"]["popularity"] <= 5000 and anime_Database["data"]["title"] not in anime_list and anime_Database["data"]["rating"] not in "Rx - Hentai" and len(anime_Database["data"]["themes"]) != 0:
+        if anime_Database["data"]["score"] != None and anime_Database["data"]["synopsis"] != None and anime_Database["data"]["approved"] == True and anime_Database["data"]["popularity"] <= 5000 and anime_Database["data"]["title"] not in anime_list and anime_Database["data"]["rating"] not in "Rx - Hentai" and len(anime_Database["data"]["themes"]) != 0 and anime_Database["data"]["score"] > 7:      
             break
         else:       
             anime_Database = requests.get(f"https://api.jikan.moe/v4/random/anime")
@@ -29,7 +29,7 @@ def get_anime():
     
 class Buttons(discord.ui.View):
     
-    @discord.ui.button(label="", emoji="🔎",style=discord.ButtonStyle.success)
+    @discord.ui.button(label="", emoji="🔎",style=discord.ButtonStyle.blurple)
     async def skip_button(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.defer(ephemeral=True)
         
@@ -57,12 +57,6 @@ class Buttons(discord.ui.View):
         self.view = Buttons(timeout=None)
         await interaction.followup.send(embed=embed_Message, view=self.view)
         
-        
-    @discord.ui.button(label="", emoji="💖",style=discord.ButtonStyle.blurple)
-    async def love_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.defer(ephemeral=True)
-        
-
 class Anime(commands.Cog):
     def __init__(self, client):
         self.client = client
