@@ -46,9 +46,9 @@ class Buttons(discord.ui.View):
         self.img = self.anime_Database["data"]["images"]["jpg"]["large_image_url"]#  Imagem grande do anime
         
         embed_Message = discord.Embed(title=f"{self.anime_Info_title}", color=discord.Color.blurple())
-        embed_Message.add_field(name="Sinopse", value="", inline=False)
-        embed_Message.add_field(name="", value=f"{self.list_sinopse[0][0]}", inline=False)
-        embed_Message.add_field(name="Anime Theme", value=f"{self.anime_info_theme}")
+        embed_Message.add_field(name="Sinopse", value=f"{self.list_sinopse[0][0]}", inline=False)
+        embed_Message.add_field(name="", value=f"", inline=False)
+        embed_Message.add_field(name="Anime Theme", value=f":game_die: **{self.anime_info_theme}**")
         embed_Message.add_field(name="Rating", value=f":star: **{self.anime_Info_score}**")
         embed_Message.add_field(name="Popularity", value=f":medal: **#{self.anime_Info_popularity}**")
         embed_Message.add_field(name="MyAnimeList", value=f"{self.anime_Info_link}")
@@ -85,9 +85,9 @@ class Anime(commands.Cog):
         self.img = self.anime_Database["data"]["images"]["jpg"]["large_image_url"]#  Imagem grande do anime
         
         embed_Message = discord.Embed(title=f"{self.anime_Info_title}", color=discord.Color.blurple())
-        embed_Message.add_field(name="Sinopse", value="", inline=False)
-        embed_Message.add_field(name="", value=f"{self.list_sinopse[0][0]}", inline=False)
-        embed_Message.add_field(name="Anime Theme", value=f"{self.anime_info_theme}")
+        embed_Message.add_field(name="Sinopse", value=f"{self.list_sinopse[0][0]}", inline=False)
+        embed_Message.add_field(name="", value=f"", inline=False)
+        embed_Message.add_field(name="Anime Theme", value=f":game_die: **{self.anime_info_theme}**")
         embed_Message.add_field(name="Rating", value=f":star: **{self.anime_Info_score}**")
         embed_Message.add_field(name="Popularity", value=f":medal: **#{self.anime_Info_popularity}**")
         embed_Message.set_image(url=f"{self.img}")
