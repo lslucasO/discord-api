@@ -71,6 +71,7 @@ class Buttons(discord.ui.View):
         
         if len(self.tarefas_list) == 0:
             embed_Tarefas.add_field(inline=True, name=f"Você ainda não possui tarefas", value=f"")
+            embed_Tarefas.add_field(inline=True, name=f"Já completadas", value=f"{self.tarefas_concluidas_file.read()}")
         else:
             embed_Tarefas.add_field(inline=True, name=f"Lista a cumprir:", value=f"\n{self.tarefas_file.read()}")
             embed_Tarefas.add_field(inline=True, name=f"Já completadas:", value=f"{self.tarefas_concluidas_file.read()}")
@@ -160,6 +161,7 @@ class ListadeTarefas(commands.Cog):
             for item in arquivo:
                 self.content.append(item)
                 
+        self.tarefas_concluidas_file = open(f"./database/Tarefas/Concluidas/{interaction.user.name}.txt", "a")       
         self.tarefas_concluidas_file = open(f"./database/Tarefas/Concluidas/{interaction.user.name}.txt", "r")
                 
         if len(self.content) == 0:
