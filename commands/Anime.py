@@ -5,27 +5,42 @@ from discord import app_commands
 
        
 def get_anime():
-    anime_Database = requests.get(f"https://api.jikan.moe/v4/random/anime")
-    anime_Database = anime_Database.json()
+    genero = []
     anime_list = []
     
+    with open("./database/Anime/filtro.txt", "r") as arquivo:
+        for id in arquivo:
+            genero.append(int(id))
+            
     with open("./database/Anime/animes.txt", "r") as arquivo:
         for anime in arquivo:
             anime_list.append(anime[:-1])
-                    
+    page = 1       
+    genero_id = genero[0]
+    check = False
+    anime_Database = requests.get(f"https://api.jikan.moe/v4/anime?genres={genero_id}&min_score=8.0&page={page}&type=tv")
+    anime_Database = anime_Database.json()
+    
+       
     while True:
-        if anime_Database["data"]["score"] != None and anime_Database["data"]["synopsis"] != None and anime_Database["data"]["approved"] == True and anime_Database["data"]["popularity"] <= 5000 and anime_Database["data"]["title"] not in anime_list and anime_Database["data"]["rating"] not in "Rx - Hentai" and len(anime_Database["data"]["themes"]) != 0 and anime_Database["data"]["score"] > 7:      
+        for anime in anime_Database["data"]:
+            if anime["title"] not in anime_list:   
+                print("Encontrei!")  
+                check = True
+                break
+        if check == True:
             break
-        else:       
-            anime_Database = requests.get(f"https://api.jikan.moe/v4/random/anime")
+        else:
+            page += 1
+            anime_Database = requests.get(f"https://api.jikan.moe/v4/anime?genres={genero_id}&min_score=8.0&page={page}&type=tv")
             anime_Database = anime_Database.json()
             print(anime_Database["data"]["title"]) 
-    
-   
+
+    print("sai do loop!")
     with open("./database/Anime/animes.txt", "a") as arquivo:
-        arquivo.write(f"{anime_Database['data']['title']}\n")
+        arquivo.write(f"{anime['title']}\n")
         
-    return anime_Database    
+    return anime 
     
 class Buttons(discord.ui.View):
     
@@ -65,18 +80,24 @@ class Anime(commands.Cog):
         
     @app_commands.command(name="recomenda-anime", description="Te recomenda uns animes")
     async def recomenda_Anime(self, interaction: discord.Interaction):
-        await interaction.response.defer(thinking=False)
         
+        await interaction.response.defer(thinking=False)
+        genero = []
+        with open("./database/Anime/filtro.txt", "r") as arquivo:
+            for filtro in arquivo:
+                genero.append(filtro)
+        
+        await interaction.channel.send(f"O filtro selecionado é de: {filtro}")
         self.anime_Database = get_anime()
         self.list_sinopse = []
         
-        self.anime_Info_title = self.anime_Database["data"]["title"]
-        self.anime_Info_link = self.anime_Database["data"]["url"]
-        self.list_sinopse.append(self.anime_Database["data"]["synopsis"].split("."))
-        self.anime_Info_score = self.anime_Database["data"]["score"]
-        self.anime_info_theme =  self.anime_Database["data"]["themes"][0]["name"]
-        self.anime_Info_popularity = self.anime_Database["data"]["popularity"]
-        self.img = self.anime_Database["data"]["images"]["jpg"]["large_image_url"]#  Imagem grande do anime
+        self.anime_Info_title = self.anime_Database["title"]
+        self.anime_Info_link = self.anime_Database["url"]
+        self.list_sinopse.append(self.anime_Database["synopsis"].split("."))
+        self.anime_Info_score = self.anime_Database["score"]
+        self.anime_info_theme =  self.anime_Database["themes"][0]["name"]
+        self.anime_Info_popularity = self.anime_Database["popularity"]
+        self.img = self.anime_Database["images"]["jpg"]["large_image_url"]#  Imagem grande do anime
         
         embed_Message = discord.Embed(title=f"{self.anime_Info_title}", color=discord.Color.blurple())
         embed_Message.add_field(name="Sinopse", value=f"{self.list_sinopse[0][0]}", inline=False)
