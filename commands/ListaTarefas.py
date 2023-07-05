@@ -147,11 +147,8 @@ class ListadeTarefas(commands.Cog):
         await interaction.response.defer(ephemeral=False)
         
         self.content = []
-        
-        
         self.fazer = open(f"./database/Tarefas/{interaction.user.name}.txt", "a")
         self.fazer = open(f"./database/Tarefas/{interaction.user.name}.txt", "r")
-        
         
         embed_Titulo = discord.Embed(title=f"Sua Lista de Tarefas", description="Perfeito para monitorar e controlar suas atividades!", color=discord.Color.green())
         embed_Titulo.set_thumbnail(url=interaction.user.avatar.url)

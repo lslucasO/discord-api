@@ -19,7 +19,7 @@ class Filtro(commands.Cog):
         await interaction.response.defer()
         
         f = open("./database/Anime/filtro.txt", "w")
-        f.write(f"{genero.name}")
+        f.write(f"{genero.value}\n{genero.name}")
         
         await interaction.followup.send(f"{interaction.user.mention} Filtro alterado para **{genero.name}**")
         
